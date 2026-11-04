@@ -1,69 +1,194 @@
-import Image from "next/image";
+import Link from "next/link";
+import HeroSlider from "@/components/HeroSlider";
+import BookCard from "@/components/BookCard";
+import { initialBooks, categoriesList, borrowingSteps } from "@/data/books";
+import {
+  ArrowRight,
+  Sparkles,
+  BookOpen,
+  Atom,
+  Landmark,
+  CheckCircle2,
+  Search,
+  CornerDownLeft,
+  ShieldCheck,
+} from "lucide-react";
 
 export default function Home() {
+  const newArrivals = initialBooks.slice(0, 8);
+
+  const getCategoryIcon = (iconName) => {
+    switch (iconName) {
+      case "BookOpen":
+        return <BookOpen className="h-6 w-6" />;
+      case "Atom":
+        return <Atom className="h-6 w-6" />;
+      case "Landmark":
+        return <Landmark className="h-6 w-6" />;
+      case "Sparkles":
+        return <Sparkles className="h-6 w-6" />;
+      default:
+        return <BookOpen className="h-6 w-6" />;
+    }
+  };
+
+  const getStepIcon = (index) => {
+    switch (index) {
+      case 0:
+        return <Search className="h-6 w-6 text-primary" />;
+      case 1:
+        return <BookOpen className="h-6 w-6 text-amber-500" />;
+      case 2:
+        return <CornerDownLeft className="h-6 w-6 text-emerald-500" />;
+      default:
+        return <ShieldCheck className="h-6 w-6 text-primary" />;
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.js
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="space-y-20 pb-20">
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <HeroSlider />
+      </section>
+
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary mb-2">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Fresh On The Shelves</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground font-heading">
+              New Arrivals
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+              Check out the latest additions contributed by readers and curated
+              by our library community.
+            </p>
+          </div>
+
+          <Link
+            href="/all-books"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors group"
+          >
+            <span>See all books</span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {newArrivals.map((book) => (
+            <BookCard key={book.id} book={book} />
+          ))}
+        </div>
+
+        <div className="mt-12 text-center">
+          <Link
+            href="/all-books"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-card border border-border text-foreground font-semibold shadow-sm hover:bg-muted hover:border-primary/50 transition-all duration-200"
+          >
+            <BookOpen className="h-5 w-5 text-primary" />
+            <span>Explore All Books</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 mb-2">
+            <span>Explore Genres</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground font-heading">
+            Most Popular Categories
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2">
+            Dive into captivating stories and deep insights arranged by the
+            genres our community loves most.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {categoriesList.map((category) => (
+            <Link
+              key={category.name}
+              href={`/all-books?category=${category.name}`}
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/50"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div
+                  className={`h-12 w-12 rounded-xl flex items-center justify-center border bg-gradient-to-br ${category.gradient}`}
+                >
+                  {getCategoryIcon(category.icon)}
+                </div>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                  {category.count}
+                </span>
+              </div>
+              <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                {category.name}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                {category.description}
+              </p>
+              <div className="mt-5 flex items-center gap-1 text-xs font-semibold text-primary">
+                <span>View Books</span>
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+              </div>
+            </Link>
+          ))}
         </div>
-      </main>
+      </section>
+
+      <section className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-border bg-gradient-to-b from-card via-card to-muted/40 p-8 sm:p-12 lg:p-16">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary mb-2">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              <span>Fast & Simple</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground font-heading">
+              How to Borrow a Book
+            </h2>
+            <p className="text-sm text-muted-foreground mt-2">
+              Start borrowing and reading your favorite titles in three easy
+              steps with our community library.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            {borrowingSteps.map((step, index) => (
+              <div
+                key={step.step}
+                className="relative rounded-2xl border border-border bg-card p-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-lg hover:border-primary/40"
+              >
+                <div className="absolute -top-4 left-6 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-md">
+                  Step {step.step}
+                </div>
+                <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-6 mt-2">
+                  {getStepIcon(index)}
+                </div>
+                <h3 className="text-xl font-bold text-foreground mb-3 font-heading">
+                  {step.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {step.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/all-books"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold shadow-md hover:opacity-95 hover:scale-[1.01] transition-all duration-200"
+            >
+              <span>Get Started Now</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
