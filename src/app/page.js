@@ -1,6 +1,5 @@
 import Link from "next/link";
 import HeroSlider from "@/components/HeroSlider";
-import BookCard from "@/components/BookCard";
 import {
   ArrowRight,
   Sparkles,
@@ -14,6 +13,7 @@ import {
   BookOpenCheck,
   Undo2,
 } from "lucide-react";
+import BookCard from "@/components/BookCard";
 
 export default async function Home() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/books`);
