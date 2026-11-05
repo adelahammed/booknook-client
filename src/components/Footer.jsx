@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin } from "lucide-react";
-import logoImg from "@/assets/BookNook Open Book Logo.png";
+import logoImg from "../assets/BookNook Open Book Logo.png";
 
 export default function Footer() {
   return (
@@ -29,7 +29,9 @@ export default function Footer() {
               </div>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              BookNook is your community-driven library platform where passionate readers borrow, share, and discover captivating literature effortlessly.
+              BookNook is your community-driven library platform where
+              passionate readers borrow, share, and discover captivating
+              literature effortlessly.
             </p>
             <div className="flex items-center gap-3 pt-2">
               <a
@@ -96,27 +98,42 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link href="/all-books" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/all-books"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   All Books
                 </Link>
               </li>
               <li>
-                <Link href="/add-book" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/add-book"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   Add New Book
                 </Link>
               </li>
               <li>
-                <Link href="/my-books" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/my-books"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   My Books List
                 </Link>
               </li>
               <li>
-                <Link href="/my-borrows" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/my-borrows"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   My Borrowed Books
                 </Link>
               </li>
@@ -129,27 +146,42 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/all-books" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/all-books"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   Fiction & Literature
                 </Link>
               </li>
               <li>
-                <Link href="/all-books" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/all-books"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   Science & Technology
                 </Link>
               </li>
               <li>
-                <Link href="/all-books" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/all-books"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   World & Civilization History
                 </Link>
               </li>
               <li>
-                <Link href="/all-books" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/all-books"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   Kids & Teen Stories
                 </Link>
               </li>
               <li>
-                <Link href="/all-books" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link
+                  href="/all-books"
+                  className="text-muted-foreground hover:text-primary transition-colors"
+                >
                   Philosophy & Psychology
                 </Link>
               </li>

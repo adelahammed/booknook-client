@@ -1,8 +1,9 @@
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, BookOpen, User } from "lucide-react";
 
-export default function BookCard({ book }) {
+const BookCard = ({ book }) => {
   return (
     <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-primary/40">
       <div>
@@ -56,4 +57,6 @@ export default function BookCard({ book }) {
       </div>
     </div>
   );
-}
+};
+
+export default BookCard;

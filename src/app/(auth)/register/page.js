@@ -3,23 +3,40 @@
 import { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { UserPlus, User, Mail, Image as ImageIcon, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import {
+  UserPlus,
+  User,
+  Mail,
+  Image as ImageIcon,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+} from "lucide-react";
+import { signUp } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    photoURL: "",
+    image: "",
     password: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (name === "password" && passwordError) {
-      setPasswordError("");
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (name === "password") {
+      setPasswordError(validatePassword(value));
     }
   };
 
@@ -27,30 +44,41 @@ export default function RegisterPage() {
     if (pass.length < 6) {
       return "Password must be at least 6 characters long.";
     }
+
     if (!/[A-Z]/.test(pass)) {
       return "Password must contain at least one uppercase letter.";
     }
+
     if (!/[a-z]/.test(pass)) {
       return "Password must contain at least one lowercase letter.";
     }
+
     return "";
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const error = validatePassword(formData.password);
+
     if (error) {
       setPasswordError(error);
       return;
     }
-    setPasswordError("");
-    toast.success("Account created successfully! Welcome to BookNook.");
-    setFormData({
-      name: "",
-      email: "",
-      photoURL: "",
-      password: "",
+
+    const { data, error: signUpError } = await signUp.email({
+      ...formData,
+      callbackURL: "/",
     });
+
+    if (data) {
+      toast.success("Sign UP successful! Please signin");
+      redirect("/login");
+    }
+
+    if (signUpError) {
+      toast.error("Something went wrong!");
+    }
   };
 
   const handleGoogleRegister = () => {
@@ -64,9 +92,11 @@ export default function RegisterPage() {
           <div className="mx-auto h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-2">
             <UserPlus className="h-6 w-6" />
           </div>
+
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-heading">
             Create an Account
           </h1>
+
           <p className="text-xs sm:text-sm text-muted-foreground">
             Join our book sharing and borrowing community today
           </p>
@@ -78,6 +108,7 @@ export default function RegisterPage() {
               <User className="h-4 w-4 text-primary" />
               <span>Full Name *</span>
             </label>
+
             <input
               type="text"
               name="name"
@@ -94,6 +125,7 @@ export default function RegisterPage() {
               <Mail className="h-4 w-4 text-primary" />
               <span>Email Address *</span>
             </label>
+
             <input
               type="email"
               name="email"
@@ -108,14 +140,15 @@ export default function RegisterPage() {
           <div className="space-y-1.5">
             <label className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-2">
               <ImageIcon className="h-4 w-4 text-primary" />
-              <span>Photo URL *</span>
+              <span>Image URL *</span>
             </label>
+
             <input
               type="url"
-              name="photoURL"
+              name="image"
               required
               placeholder="https://example.com/avatar.jpg"
-              value={formData.photoURL}
+              value={formData.image}
               onChange={handleChange}
               className="w-full px-4 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
             />
@@ -126,6 +159,7 @@ export default function RegisterPage() {
               <Lock className="h-4 w-4 text-primary" />
               <span>Password *</span>
             </label>
+
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -140,12 +174,17 @@ export default function RegisterPage() {
                     : "border-border focus:ring-primary/40 focus:border-primary"
                 }`}
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
 
@@ -156,7 +195,8 @@ export default function RegisterPage() {
               </div>
             ) : (
               <p className="text-[11px] text-muted-foreground pt-0.5">
-                Must contain at least 6 characters, 1 uppercase, and 1 lowercase letter.
+                Must contain at least 6 characters, 1 uppercase, and 1 lowercase
+                letter.
               </p>
             )}
           </div>
@@ -201,6 +241,7 @@ export default function RegisterPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
+
             <span>Register with Google</span>
           </button>
         </form>

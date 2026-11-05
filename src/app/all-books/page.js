@@ -1,4 +1,4 @@
-import BookCard from "@/components/BookCard";
+import BookCard from "@/components/BookCard.jsx";
 
 export default async function AllBooksPage() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/books`, {

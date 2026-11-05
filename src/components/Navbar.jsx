@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { useTheme } from "@/context/theme-context";
+import { useTheme } from "../context/theme-context";
 import {
   Sun,
   Moon,
@@ -15,7 +15,7 @@ import {
   LogIn,
   UserPlus,
 } from "lucide-react";
-import logoImg from "@/assets/BookNook Open Book Logo.png";
+import logoImg from "../assets/BookNook Open Book Logo.png";
 
 const navLinks = [
   { href: "/", label: "Home" },

@@ -6,10 +6,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination, EffectFade } from "swiper/modules";
 import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
 
-import slider1 from "@/assets/Slider Image (1).jpg";
-import slider2 from "@/assets/Slider Image (2).jpg";
-import slider3 from "@/assets/Slider Image (3).jpg";
-import slider4 from "@/assets/Slider Image (4).jpg";
+import slider1 from "../assets/Slider Image (1).jpg";
+import slider2 from "../assets/Slider Image (2).jpg";
+import slider3 from "../assets/Slider Image (3).jpg";
+import slider4 from "../assets/Slider Image (4).jpg";
 
 const slides = [
   {
