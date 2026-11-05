@@ -47,7 +47,7 @@ export default function BookCard({ book }) {
 
       <div className="pt-4 mt-2 border-t border-border/60">
         <Link
-          href={`/book-details?id=${book.id}`}
+          href={`/books/${book._id}`}
           className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-muted/80 text-foreground text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200 group/btn"
         >
           <span>View Details</span>

@@ -1,31 +1,36 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import toast from "react-hot-toast";
-import { initialBooks } from "@/data/books";
-import { ArrowLeft, BookOpen, User, Mail, Tag, Layers, CheckCircle, X, Shield, Calendar, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  BookOpen,
+  User,
+  Mail,
+  Tag,
+  Layers,
+  X,
+  Sparkles,
+} from "lucide-react";
 
-function BookDetailsContent() {
-  const searchParams = useSearchParams();
-  const bookId = searchParams.get("id") || "1";
-  const book = initialBooks.find((b) => b.id === bookId) || initialBooks[0];
-
-  const [copiesLeft, setCopiesLeft] = useState(book.copies);
+function BookDetailsContent({ book }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [borrowerName, setBorrowerName] = useState("");
   const [borrowerEmail, setBorrowerEmail] = useState("");
 
   const handleConfirmBorrow = (e) => {
     e.preventDefault();
-    if (copiesLeft > 0) {
-      setCopiesLeft((prev) => prev - 1);
+
+    if (book.copies > 0) {
       setIsModalOpen(false);
       setBorrowerName("");
       setBorrowerEmail("");
-      toast.success(`You have successfully borrowed "${book.title}"! Enjoy your read.`);
+
+      toast.success(
+        `You have successfully borrowed "${book.title}"! Enjoy your read.`,
+      );
     } else {
       toast.error("Sorry, no copies are left for this book.");
     }
@@ -63,10 +68,17 @@ function BookDetailsContent() {
                   <Layers className="h-4 w-4 text-primary" />
                   <span>Copies Left</span>
                 </span>
-                <span className={`font-bold px-2.5 py-0.5 rounded-full text-xs ${
-                  copiesLeft > 0 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-red-500/10 text-red-600"
-                }`}>
-                  {copiesLeft > 0 ? `${copiesLeft} available` : "Out of stock"}
+
+                <span
+                  className={`font-bold px-2.5 py-0.5 rounded-full text-xs ${
+                    book.copies > 0
+                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      : "bg-red-500/10 text-red-600"
+                  }`}
+                >
+                  {book.copies > 0
+                    ? `${book.copies} available`
+                    : "Out of stock"}
                 </span>
               </div>
 
@@ -75,6 +87,7 @@ function BookDetailsContent() {
                   <Tag className="h-4 w-4 text-primary" />
                   <span>Category</span>
                 </span>
+
                 <span className="font-semibold text-foreground">
                   {book.category}
                 </span>
@@ -88,12 +101,17 @@ function BookDetailsContent() {
                 <Sparkles className="h-3.5 w-3.5" />
                 <span>Featured Library Book</span>
               </div>
+
               <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground font-heading">
                 {book.title}
               </h1>
+
               <div className="flex items-center gap-2 text-base text-muted-foreground mt-2">
                 <User className="h-4 w-4 text-primary" />
-                <span>Author: <strong className="text-foreground">{book.author}</strong></span>
+                <span>
+                  Author:{" "}
+                  <strong className="text-foreground">{book.author}</strong>
+                </span>
               </div>
             </div>
 
@@ -104,6 +122,7 @@ function BookDetailsContent() {
                 </span>
                 <p className="font-bold text-foreground">{book.addedBy}</p>
               </div>
+
               <div className="flex items-center gap-1.5 text-muted-foreground sm:border-l sm:border-border sm:pl-4">
                 <Mail className="h-4 w-4 text-primary" />
                 <span>{book.addedEmail}</span>
@@ -114,6 +133,7 @@ function BookDetailsContent() {
               <h2 className="text-lg font-bold text-foreground font-heading">
                 About this Book
               </h2>
+
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed whitespace-pre-line">
                 {book.description}
               </p>
@@ -121,32 +141,50 @@ function BookDetailsContent() {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
               <div className="p-3 rounded-xl border border-border bg-muted/30 text-center">
-                <span className="text-[11px] text-muted-foreground block">Language</span>
-                <span className="text-xs sm:text-sm font-semibold text-foreground">English</span>
+                <span className="text-[11px] text-muted-foreground block">
+                  Language
+                </span>
+                <span className="text-xs sm:text-sm font-semibold text-foreground">
+                  English
+                </span>
               </div>
+
               <div className="p-3 rounded-xl border border-border bg-muted/30 text-center">
-                <span className="text-[11px] text-muted-foreground block">Format</span>
-                <span className="text-xs sm:text-sm font-semibold text-foreground">Hardcover & Paper</span>
+                <span className="text-[11px] text-muted-foreground block">
+                  Format
+                </span>
+                <span className="text-xs sm:text-sm font-semibold text-foreground">
+                  Hardcover & Paper
+                </span>
               </div>
+
               <div className="p-3 rounded-xl border border-border bg-muted/30 text-center col-span-2 sm:col-span-1">
-                <span className="text-[11px] text-muted-foreground block">Loan Period</span>
-                <span className="text-xs sm:text-sm font-semibold text-foreground">21 Days</span>
+                <span className="text-[11px] text-muted-foreground block">
+                  Loan Period
+                </span>
+                <span className="text-xs sm:text-sm font-semibold text-foreground">
+                  21 Days
+                </span>
               </div>
             </div>
 
             <div className="pt-4 border-t border-border">
               <button
                 type="button"
-                disabled={copiesLeft <= 0}
+                disabled={book.copies <= 0}
                 onClick={() => setIsModalOpen(true)}
                 className={`w-full py-4 rounded-xl font-semibold text-base shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
-                  copiesLeft > 0
+                  book.copies > 0
                     ? "bg-primary text-primary-foreground hover:opacity-95 hover:shadow-xl hover:scale-[1.01]"
                     : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
                 }`}
               >
                 <BookOpen className="h-5 w-5" />
-                <span>{copiesLeft > 0 ? "Borrow This Book" : "Currently Unavailable"}</span>
+                <span>
+                  {book.copies > 0
+                    ? "Borrow This Book"
+                    : "Currently Unavailable"}
+                </span>
               </button>
             </div>
           </div>
@@ -157,6 +195,7 @@ function BookDetailsContent() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="relative w-full max-w-lg rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200">
             <button
+              type="button"
               onClick={() => setIsModalOpen(false)}
               className="absolute top-5 right-5 h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
             >
@@ -168,11 +207,17 @@ function BookDetailsContent() {
                 <BookOpen className="h-3.5 w-3.5" />
                 <span>Borrow Request</span>
               </div>
+
               <h2 className="text-2xl font-extrabold tracking-tight text-foreground font-heading">
                 Borrow Confirmation
               </h2>
+
               <p className="text-xs sm:text-sm text-muted-foreground">
-                You are requesting to borrow <strong className="text-foreground">&quot;{book.title}&quot;</strong>. Please provide your information below.
+                You are requesting to borrow{" "}
+                <strong className="text-foreground">
+                  &quot;{book.title}&quot;
+                </strong>
+                . Please provide your information below.
               </p>
             </div>
 
@@ -182,6 +227,7 @@ function BookDetailsContent() {
                   <User className="h-4 w-4 text-primary" />
                   <span>Your Full Name *</span>
                 </label>
+
                 <input
                   type="text"
                   required
@@ -197,6 +243,7 @@ function BookDetailsContent() {
                   <Mail className="h-4 w-4 text-primary" />
                   <span>Your Email Address *</span>
                 </label>
+
                 <input
                   type="email"
                   required
@@ -212,9 +259,12 @@ function BookDetailsContent() {
                   <span>Loan Period:</span>
                   <span className="font-semibold text-foreground">21 Days</span>
                 </div>
+
                 <div className="flex items-center justify-between">
                   <span>Return Policy:</span>
-                  <span className="font-semibold text-foreground">Free community return</span>
+                  <span className="font-semibold text-foreground">
+                    Free community return
+                  </span>
                 </div>
               </div>
 
@@ -226,6 +276,7 @@ function BookDetailsContent() {
                 >
                   Cancel
                 </button>
+
                 <button
                   type="submit"
                   className="flex-1 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold shadow-md hover:opacity-95 transition-all cursor-pointer"
@@ -241,14 +292,4 @@ function BookDetailsContent() {
   );
 }
 
-export default function BookDetailsPage() {
-  return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    }>
-      <BookDetailsContent />
-    </Suspense>
-  );
-}
+export default BookDetailsContent;
