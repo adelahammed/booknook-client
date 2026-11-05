@@ -1,14 +1,34 @@
 "use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { initialBooks } from "@/data/books";
 import { BookOpen, Edit3, Trash2, PlusCircle, AlertCircle } from "lucide-react";
+import { useSession } from "@/lib/auth-client";
+import { useEffect, useState } from "react";
 
 export default function MyBooksPage() {
-  const [myBooks, setMyBooks] = useState(initialBooks.slice(0, 5));
+  const { data: session } = useSession();
+  const user = session?.user;
+  const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/books`, {
+          cache: "no-store",
+        });
+
+        const data = await res.json();
+        setBooks(data);
+      } catch (error) {
+        console.error("Failed to fetch books:", error);
+      }
+    };
+
+    fetchBooks();
+  }, []);
+
+  const myBooks = books.filter((book) => book.userEmail === user.email);
 
   const handleDelete = (id, title) => {
     setMyBooks((prev) => prev.filter((book) => book.id !== id));
@@ -27,7 +47,8 @@ export default function MyBooksPage() {
             My Books
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Manage the books you have added to the community library. Update information or remove entries.
+            Manage the books you have added to the community library. Update
+            information or remove entries.
           </p>
         </div>
 
@@ -55,7 +76,10 @@ export default function MyBooksPage() {
               </thead>
               <tbody className="divide-y divide-border text-sm">
                 {myBooks.map((book) => (
-                  <tr key={book.id} className="hover:bg-muted/30 transition-colors">
+                  <tr
+                    key={book._id}
+                    className="hover:bg-muted/30 transition-colors"
+                  >
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-4">
                         <div className="relative h-16 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
@@ -122,9 +146,12 @@ export default function MyBooksPage() {
       ) : (
         <div className="text-center py-20 rounded-2xl border border-dashed border-border bg-card p-8">
           <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-          <h3 className="text-lg font-bold text-foreground">No Books in Your List</h3>
+          <h3 className="text-lg font-bold text-foreground">
+            No Books in Your List
+          </h3>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
-            You haven&apos;t added any books yet or have deleted all entries. Share a book today!
+            You haven&apos;t added any books yet or have deleted all entries.
+            Share a book today!
           </p>
           <Link
             href="/add-book"
