@@ -156,9 +156,6 @@ export default function AddBookPage() {
                 <ImageIcon className="h-4 w-4 text-primary" />
                 <span>Book Image URL *</span>
               </span>
-              <span className="text-xs text-muted-foreground">
-                Upload to ImgBB / PostImage & paste URL
-              </span>
             </label>
             <input
               type="url"

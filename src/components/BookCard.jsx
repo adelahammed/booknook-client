@@ -3,20 +3,10 @@ import Image from "next/image";
 import { ArrowRight, BookOpen, User } from "lucide-react";
 
 export default function BookCard({ book }) {
-  const categoryColors = {
-    Fiction: "bg-sky-500/10 text-sky-700 dark:text-sky-300 border-sky-500/20",
-    Science: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20",
-    History: "bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/20",
-    Kids: "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20",
-    Others: "bg-slate-500/10 text-slate-700 dark:text-slate-300 border-slate-500/20"
-  };
-
-  const badgeClass = categoryColors[book.category] || categoryColors.Others;
-
   return (
     <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-4 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-primary/40">
       <div>
-        <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-muted">
+        <div className="relative aspect-[1/1.3] w-full overflow-hidden rounded-xl bg-muted">
           <Image
             src={book.image}
             alt={book.title}
@@ -24,8 +14,10 @@ export default function BookCard({ book }) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          <div className="absolute top-3 left-3">
-            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border backdrop-blur-md ${badgeClass}`}>
+          <div className="absolute bottom-3 left-3">
+            <span
+              className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-white backdrop-blur-md`}
+            >
               {book.category}
             </span>
           </div>
