@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { LogIn, Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { signIn } from "@/lib/auth-client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -29,19 +30,37 @@ export default function LoginPage() {
     toast.error("Forget Password option is not available");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const error = validatePassword(password);
-    if (error) {
-      setPasswordError(error);
-      return;
+    const formData = new FormData(e.target);
+    const user = Object.fromEntries(formData.entries());
+
+    const { data, error } = await signIn.email({
+      ...user,
+      callbackURL: "/",
+    });
+
+    if (data) {
+      toast.success("Sign In successfull!");
     }
-    setPasswordError("");
-    toast.success("Logged in successfully! Welcome back.");
+
+    if (error) {
+      toast.error("Something went error!");
+    }
   };
 
-  const handleGoogleLogin = () => {
-    toast.success("Connecting with Google...");
+  const signInGoogle = async () => {
+    const data = await signIn.social({
+      provider: "google",
+    });
+    return data;
+  };
+
+  const signInGithub = async () => {
+    const data = await signIn.social({
+      provider: "github",
+    });
+    return data;
   };
 
   return (
@@ -111,7 +130,11 @@ export default function LoginPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
 
@@ -130,17 +153,17 @@ export default function LoginPage() {
             Login
           </button>
 
-          <div className="relative flex items-center justify-center">
-            <div className="border-t border-border w-full"></div>
-            <span className="bg-card px-3 text-xs text-muted-foreground uppercase font-semibold">
+          <div className="relative flex items-center justify-center my-2">
+            <div className="border-t border-border w-[200px] "></div>
+            <span className=" bg-card px-3 w-full text-center text-xs text-muted-foreground uppercase font-semibold mx-auto">
               Or continue with
             </span>
-            <div className="border-t border-border w-full"></div>
+            <div className="border-t border-border w-[200px]"></div>
           </div>
 
           <button
             type="button"
-            onClick={handleGoogleLogin}
+            onClick={signInGoogle}
             className="w-full py-3 px-4 rounded-xl border border-border bg-card text-foreground font-medium text-sm hover:bg-muted transition-all duration-200 flex items-center justify-center gap-3 cursor-pointer"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">

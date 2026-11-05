@@ -13,7 +13,7 @@ import {
   EyeOff,
   AlertCircle,
 } from "lucide-react";
-import { signUp } from "@/lib/auth-client";
+import { signIn, signUp } from "@/lib/auth-client";
 import { redirect } from "next/navigation";
 
 export default function RegisterPage() {
@@ -80,9 +80,12 @@ export default function RegisterPage() {
       toast.error("Something went wrong!");
     }
   };
+  const handleGoogleRegister = async () => {
+    const data = await signIn.social({
+      provider: "google",
+    });
 
-  const handleGoogleRegister = () => {
-    toast.success("Registering with Google account...");
+    return data;
   };
 
   return (
@@ -212,7 +215,7 @@ export default function RegisterPage() {
 
           <div className="relative flex items-center justify-center my-2">
             <div className="border-t border-border w-full"></div>
-            <span className="bg-card px-3 text-xs text-muted-foreground uppercase font-semibold">
+            <span className="mx-auto bg-card px-3 w-full text-xs text-muted-foreground uppercase font-semibold">
               Or sign up with
             </span>
             <div className="border-t border-border w-full"></div>

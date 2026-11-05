@@ -12,8 +12,12 @@ import {
   Layers,
   Tag,
 } from "lucide-react";
+import { useSession } from "@/lib/auth-client";
 
 export default function AddBookPage() {
+  const { data: session } = useSession();
+  const user = session?.user;
+
   const [formData, setFormData] = useState({
     title: "",
     author: "",
@@ -21,38 +25,49 @@ export default function AddBookPage() {
     image: "",
     description: "",
     copies: "",
-    userName: "",
-    userEmail: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const formData = new FormData(form);
-    const newBook = Object.fromEntries(formData.entries());
+    const formElementsData = new FormData(form);
 
-    const result = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/books`,
+    // Explicitly combine form data with uploader info from session
+    const newBook = {
+      ...Object.fromEntries(formElementsData.entries()),
+      userName: user?.name || "",
+      userEmail: user?.email || "",
+    };
 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      const result = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/books`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newBook),
         },
-        body: JSON.stringify(newBook),
-      },
-    );
-    const data = await result.json();
-    console.log("New Book Data:", newBook);
-    console.log("Server Response:", data);
-    if (data.acknowledged) {
-      toast.success("Book successfully added to BookNook!");
-    } else {
-      toast.error("Failed to add book. Please try again.");
+      );
+      const data = await result.json();
+      console.log("New Book Data:", newBook);
+      console.log("Server Response:", data);
+
+      if (result.ok && (data.acknowledged || data.insertedId || data.success)) {
+        toast.success("Book successfully added to BookNook!");
+        // Optional: Reset form here if desired
+      } else {
+        toast.error(data.message || "Failed to add book. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error adding book:", error);
+      toast.error("Something went wrong. Please check your connection.");
     }
   };
 
@@ -85,7 +100,7 @@ export default function AddBookPage() {
                 name="title"
                 required
                 placeholder="e.g. The Great Gatsby"
-                value={formData.title}
+                value={formData.title || ""}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
               />
@@ -101,7 +116,7 @@ export default function AddBookPage() {
                 name="author"
                 required
                 placeholder="e.g. F. Scott Fitzgerald"
-                value={formData.author}
+                value={formData.author || ""}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
               />
@@ -117,7 +132,7 @@ export default function AddBookPage() {
               <select
                 name="category"
                 required
-                value={formData.category}
+                value={formData.category || ""}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all cursor-pointer"
               >
@@ -143,7 +158,7 @@ export default function AddBookPage() {
                 min="1"
                 required
                 placeholder="e.g. 5"
-                value={formData.copies}
+                value={formData.copies || ""}
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
               />
@@ -162,7 +177,7 @@ export default function AddBookPage() {
               name="image"
               required
               placeholder="https://i.ibb.co/example/book-cover.jpg"
-              value={formData.image}
+              value={formData.image || ""}
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
             />
@@ -178,7 +193,7 @@ export default function AddBookPage() {
               required
               rows={4}
               placeholder="Provide a concise summary or synopsis of the book..."
-              value={formData.description}
+              value={formData.description || ""}
               onChange={handleChange}
               className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all resize-y"
             />
@@ -199,9 +214,9 @@ export default function AddBookPage() {
                   name="userName"
                   required
                   placeholder="Your full name"
-                  value={formData.userName}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                  value={user?.name || ""}
+                  readOnly
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 text-muted-foreground text-sm cursor-not-allowed transition-all"
                 />
               </div>
 
@@ -215,9 +230,9 @@ export default function AddBookPage() {
                   name="userEmail"
                   required
                   placeholder="your.email@example.com"
-                  value={formData.userEmail}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
+                  value={user?.email || ""}
+                  readOnly
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 text-muted-foreground text-sm cursor-not-allowed transition-all"
                 />
               </div>
             </div>

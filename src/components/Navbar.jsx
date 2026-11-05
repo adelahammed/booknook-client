@@ -16,6 +16,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import logoImg from "../assets/BookNook Open Book Logo.png";
+import UserBlocks from "./UserBlock";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -82,21 +83,7 @@ export default function Navbar() {
             )}
           </button>
 
-          <Link
-            href="/login"
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl border border-border text-foreground hover:bg-muted hover:border-primary/50 transition-all duration-200"
-          >
-            <LogIn className="h-4 w-4 text-primary" />
-            <span>Login</span>
-          </Link>
-
-          <Link
-            href="/register"
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-xl bg-primary text-primary-foreground shadow-sm hover:opacity-95 hover:shadow-md transition-all duration-200"
-          >
-            <UserPlus className="h-4 w-4" />
-            <span>Register</span>
-          </Link>
+          <UserBlocks />
         </div>
 
         <div className="flex lg:hidden items-center gap-2">
@@ -148,24 +135,7 @@ export default function Navbar() {
             })}
           </div>
 
-          <div className="pt-3 border-t border-border flex flex-col gap-2">
-            <Link
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors"
-            >
-              <LogIn className="h-4 w-4 text-primary" />
-              <span>Login</span>
-            </Link>
-            <Link
-              href="/register"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-medium shadow-sm hover:opacity-95 transition-colors"
-            >
-              <UserPlus className="h-4 w-4" />
-              <span>Register</span>
-            </Link>
-          </div>
+          <UserBlocks />
         </div>
       )}
     </header>
