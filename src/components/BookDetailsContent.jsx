@@ -14,27 +14,58 @@ import {
   X,
   Sparkles,
 } from "lucide-react";
+import { useSession } from "@/lib/auth-client";
 
 function BookDetailsContent({ book }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [borrowerName, setBorrowerName] = useState("");
-  const [borrowerEmail, setBorrowerEmail] = useState("");
 
-  const handleConfirmBorrow = (e) => {
-    e.preventDefault();
+  const { data: session } = useSession();
+  const user = session?.user;
 
-    if (book.copies > 0) {
-      setIsModalOpen(false);
-      setBorrowerName("");
-      setBorrowerEmail("");
-
-      toast.success(
-        `You have successfully borrowed "${book.title}"! Enjoy your read.`,
+  const handleConfirmBorrow = async () => {
+    try {
+      const result = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: user.email,
+            bookBorrowed: book._id,
+          }),
+        },
       );
-    } else {
-      toast.error("Sorry, no copies are left for this book.");
+      const data = await result.json();
+
+      if (result.ok && (data.acknowledged || data.insertedId || data.success)) {
+        toast.success("Book successfully added to BookNook!");
+        // Optional: Reset form here if desired
+      } else {
+        toast.error(data.message || "Failed to add book. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error adding book:", error);
+      toast.error("Something went wrong. Please check your connection.");
     }
   };
+
+  // const handleConfirmBorrow = (e) => {
+  //   e.preventDefault();
+
+  //   if (book.copies > 0) {
+  //     setIsModalOpen(false);
+  //     setBorrowerName("");
+  //     setBorrowerEmail("");
+
+  //     toast.success(
+  //       `You have successfully borrowed "${book.title}"! Enjoy your read.`,
+  //     );
+  //   } else {
+  //     toast.error("Sorry, no copies are left for this book.");
+  //   }
+  // };
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 max-w-5xl space-y-8">
@@ -221,11 +252,11 @@ function BookDetailsContent({ book }) {
               </p>
             </div>
 
-            <form onSubmit={handleConfirmBorrow} className="space-y-4">
+            {/* <form onSubmit={handleConfirmBorrow} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-2">
                   <User className="h-4 w-4 text-primary" />
-                  <span>Your Full Name *</span>
+                  <span>Name *</span>
                 </label>
 
                 <input
@@ -268,23 +299,24 @@ function BookDetailsContent({ book }) {
                 </div>
               </div>
 
-              <div className="pt-3 flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="flex-1 py-3 rounded-xl border border-border text-foreground text-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
+             
+            </form> */}
+            <div className="pt-3 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="flex-1 py-3 rounded-xl border border-border text-foreground text-sm font-semibold hover:bg-muted transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
 
-                <button
-                  type="submit"
-                  className="flex-1 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold shadow-md hover:opacity-95 transition-all cursor-pointer"
-                >
-                  Confirm Borrow
-                </button>
-              </div>
-            </form>
+              <button
+                onClick={handleConfirmBorrow}
+                className="flex-1 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold shadow-md hover:opacity-95 transition-all cursor-pointer"
+              >
+                Confirm Borrow
+              </button>
+            </div>
           </div>
         </div>
       )}
