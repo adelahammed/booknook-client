@@ -2,7 +2,16 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { PlusCircle, Book, User, Mail, Image as ImageIcon, FileText, Layers, Tag } from "lucide-react";
+import {
+  PlusCircle,
+  Book,
+  User,
+  Mail,
+  Image as ImageIcon,
+  FileText,
+  Layers,
+  Tag,
+} from "lucide-react";
 
 export default function AddBookPage() {
   const [formData, setFormData] = useState({
@@ -20,20 +29,31 @@ export default function AddBookPage() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast.success("Book successfully added to BookNook!");
-    setFormData({
-      title: "",
-      author: "",
-      category: "",
-      image: "",
-      description: "",
-      copies: "",
-      userName: "",
-      userEmail: "",
-    });
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const newBook = Object.fromEntries(formData.entries());
+
+    const result = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/books`,
+
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newBook),
+      },
+    );
+    const data = await result.json();
+    console.log("New Book Data:", newBook);
+    console.log("Server Response:", data);
+    if (data.acknowledged) {
+      toast.success("Book successfully added to BookNook!");
+    } else {
+      toast.error("Failed to add book. Please try again.");
+    }
   };
 
   return (
@@ -47,7 +67,8 @@ export default function AddBookPage() {
           Add New Book
         </h1>
         <p className="text-sm text-muted-foreground mt-2 max-w-lg mx-auto">
-          Share a book with our reading community. Fill in the details below to publish it to our catalog.
+          Share a book with our reading community. Fill in the details below to
+          publish it to our catalog.
         </p>
       </div>
 
@@ -100,7 +121,9 @@ export default function AddBookPage() {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all cursor-pointer"
               >
-                <option value="" disabled>Select a category</option>
+                <option value="" disabled>
+                  Select a category
+                </option>
                 <option value="Fiction">Fiction</option>
                 <option value="Science">Science</option>
                 <option value="History">History</option>
@@ -133,7 +156,9 @@ export default function AddBookPage() {
                 <ImageIcon className="h-4 w-4 text-primary" />
                 <span>Book Image URL *</span>
               </span>
-              <span className="text-xs text-muted-foreground">Upload to ImgBB / PostImage & paste URL</span>
+              <span className="text-xs text-muted-foreground">
+                Upload to ImgBB / PostImage & paste URL
+              </span>
             </label>
             <input
               type="url"
@@ -163,7 +188,9 @@ export default function AddBookPage() {
           </div>
 
           <div className="pt-4 border-t border-border">
-            <h3 className="text-sm font-semibold text-foreground mb-4">Uploader Information</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-4">
+              Uploader Information
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-foreground flex items-center gap-2">
