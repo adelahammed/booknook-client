@@ -26,7 +26,7 @@ export default function MyProfilePage() {
         <div className="relative pt-12 flex flex-col sm:flex-row items-center sm:items-end gap-6 text-center sm:text-left">
           <div className="relative h-28 w-28 sm:h-32 sm:w-32 rounded-3xl overflow-hidden border-4 border-card shadow-2xl bg-muted flex-shrink-0">
             <Image
-              src={user?.image}
+              src={user?.image || "/default-avatar.png"}
               alt="user image"
               fill
               className="object-cover"

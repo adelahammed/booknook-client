@@ -4,11 +4,21 @@ import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { initialBooks } from "@/data/books";
-import { Edit3, ArrowLeft, Book, User, Mail, Image as ImageIcon, FileText, Layers, Tag } from "lucide-react";
+import {
+  Edit3,
+  ArrowLeft,
+  Book,
+  User,
+  Mail,
+  Image as ImageIcon,
+  FileText,
+  Layers,
+  Tag,
+} from "lucide-react";
 
 function BookUpdateFormInner({ bookId }) {
-  const defaultBook = initialBooks.find((b) => b.id === bookId) || initialBooks[0];
+  const defaultBook =
+    initialBooks.find((b) => b.id === bookId) || initialBooks[0];
 
   const [formData, setFormData] = useState({
     title: defaultBook.title,
@@ -103,7 +113,9 @@ function BookUpdateFormInner({ bookId }) {
                 onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all cursor-pointer"
               >
-                <option value="" disabled>Select a category</option>
+                <option value="" disabled>
+                  Select a category
+                </option>
                 <option value="Fiction">Fiction</option>
                 <option value="Science">Science</option>
                 <option value="History">History</option>
@@ -135,7 +147,9 @@ function BookUpdateFormInner({ bookId }) {
                 <ImageIcon className="h-4 w-4 text-primary" />
                 <span>Book Image URL *</span>
               </span>
-              <span className="text-xs text-muted-foreground">Upload to ImgBB / PostImage & paste URL</span>
+              <span className="text-xs text-muted-foreground">
+                Upload to ImgBB / PostImage & paste URL
+              </span>
             </label>
             <input
               type="url"
@@ -163,7 +177,9 @@ function BookUpdateFormInner({ bookId }) {
           </div>
 
           <div className="pt-4 border-t border-border">
-            <h3 className="text-sm font-semibold text-foreground mb-4">Uploader Information</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-4">
+              Uploader Information
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-foreground flex items-center gap-2">
@@ -221,11 +237,13 @@ function BookUpdateForm() {
 
 export default function BookUpdatePage() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      }
+    >
       <BookUpdateForm />
     </Suspense>
   );

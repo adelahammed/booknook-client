@@ -53,7 +53,7 @@ export default function UserBlocks({ setMobileMenuOpen }) {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem asChild className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer">
               <Link
                 href="/my-profile"
                 className="flex items-center gap-2 w-full"
@@ -76,7 +76,6 @@ export default function UserBlocks({ setMobileMenuOpen }) {
         </DropdownMenu>
       ) : (
         <div className="flex flex-row gap-2">
-          {/* Using button variant styles directly via className on Link to avoid asChild errors */}
           <Link
             href="/login"
             onClick={() => setMobileMenuOpen?.(false)}

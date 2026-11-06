@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,12 +17,13 @@ import {
 import { useSession } from "@/lib/auth-client";
 
 function BookDetailsContent({ book }) {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: session } = useSession();
   const user = session?.user;
 
-  const handleConfirmBorrow = async () => {
+  const handleConfirmBorrow = async (id) => {
     try {
       const result = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows`,
@@ -33,25 +34,50 @@ function BookDetailsContent({ book }) {
           },
           body: JSON.stringify({
             email: user.email,
-            bookBorrowed: book._id,
+            bookBorrowed: id,
           }),
         },
       );
+
       const data = await result.json();
 
-      if (result.ok && (data.acknowledged || data.insertedId || data.success)) {
-        toast.success("Book successfully added to BookNook!");
-        // Optional: Reset form here if desired
-      } else {
-        toast.error(data.message || "Failed to add book. Please try again.");
+      if (
+        !result.ok ||
+        !(data.acknowledged || data.insertedId || data.success)
+      ) {
+        toast.error(data.message || "Failed to borrow book!");
+        return;
       }
+
+      const updateResult = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/books/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            copies: book.copies - 1,
+          }),
+        },
+      );
+
+      if (!updateResult.ok) {
+        toast.error("Borrow saved, but book copies update failed!");
+        return;
+      }
+
+      toast.success("Book successfully borrowed!");
+
+      setIsModalOpen(false);
+
+      router.push("/my-borrows");
     } catch (error) {
-      console.error("Error adding book:", error);
-      toast.error("Something went wrong. Please check your connection.");
+      console.error("Error borrowing book:", error);
+      toast.error("Something went wrong!");
     }
   };
 
-  // const handleConfirmBorrow = (e) => {
   //   e.preventDefault();
 
   //   if (book.copies > 0) {
@@ -252,55 +278,6 @@ function BookDetailsContent({ book }) {
               </p>
             </div>
 
-            {/* <form onSubmit={handleConfirmBorrow} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-2">
-                  <User className="h-4 w-4 text-primary" />
-                  <span>Name *</span>
-                </label>
-
-                <input
-                  type="text"
-                  required
-                  placeholder="Enter your name"
-                  value={borrowerName}
-                  onChange={(e) => setBorrowerName(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-xs sm:text-sm font-semibold text-foreground flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-primary" />
-                  <span>Your Email Address *</span>
-                </label>
-
-                <input
-                  type="email"
-                  required
-                  placeholder="name@example.com"
-                  value={borrowerEmail}
-                  onChange={(e) => setBorrowerEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all"
-                />
-              </div>
-
-              <div className="rounded-xl border border-border bg-muted/30 p-3 text-xs text-muted-foreground space-y-1">
-                <div className="flex items-center justify-between">
-                  <span>Loan Period:</span>
-                  <span className="font-semibold text-foreground">21 Days</span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span>Return Policy:</span>
-                  <span className="font-semibold text-foreground">
-                    Free community return
-                  </span>
-                </div>
-              </div>
-
-             
-            </form> */}
             <div className="pt-3 flex gap-3">
               <button
                 type="button"
@@ -311,7 +288,7 @@ function BookDetailsContent({ book }) {
               </button>
 
               <button
-                onClick={handleConfirmBorrow}
+                onClick={() => handleConfirmBorrow(book._id)}
                 className="flex-1 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold shadow-md hover:opacity-95 transition-all cursor-pointer"
               >
                 Confirm Borrow

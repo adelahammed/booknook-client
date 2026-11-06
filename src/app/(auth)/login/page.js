@@ -46,6 +46,7 @@ export default function LoginPage() {
 
     if (error) {
       toast.error("Something went error!");
+      console.log("error is", error);
     }
   };
 
@@ -85,6 +86,7 @@ export default function LoginPage() {
               <span>Email Address *</span>
             </label>
             <input
+              name="email"
               type="email"
               required
               placeholder="name@example.com"
@@ -111,6 +113,7 @@ export default function LoginPage() {
 
             <div className="relative">
               <input
+                name="password"
                 type={showPassword ? "text" : "password"}
                 required
                 placeholder="••••••••"
