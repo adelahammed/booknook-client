@@ -14,13 +14,7 @@ import { useSession } from "@/lib/auth-client";
 import { useEffect, useState } from "react";
 
 export default function MyBorrowsPage() {
-  // const handleReturn = (id, title) => {
-  //   setBorrowedBooks((prev) => prev.filter((book) => book.id !== id));
-  //   toast.success(`"${title}" returned successfully! Thank you.`);
-  // };
-
   const [borrowbooks, setborrowBooks] = useState([]);
-  const [books, setBooks] = useState([]);
   const { data: session } = useSession();
   const user = session?.user;
   useEffect(() => {
@@ -45,26 +39,46 @@ export default function MyBorrowsPage() {
     fetchBooks();
   }, [user?.email]);
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/books`, {
-          cache: "no-store",
-        });
+  const handleReturn = async (borrowId, email, bookCopies) => {
+    try {
+      const result = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows/${email}/${borrowId}`,
+        {
+          method: "DELETE",
+        },
+      );
+      const data = await result.json();
 
-        const data = await res.json();
-        setBooks(data);
-      } catch (error) {
-        console.error("Failed to fetch books:", error);
+      if (result.ok && (data.acknowledged || data.insertedId || data.success)) {
+        toast.success("Book successfully removed!");
+      } else {
+        toast.error(data.message || "Failed to remove book. Please try again.");
       }
-    };
 
-    fetchBooks();
-  }, []);
+      const updateResult = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/books/${borrowId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            copies: bookCopies + 1,
+          }),
+        },
+      );
 
-  const borrowedBooks = books.filter((book) =>
-    borrowbooks.some((borrow) => borrow.bookBorrowed === book._id),
-  );
+      if (!updateResult.ok) {
+        toast.error("Borrow saved, but book copies update failed!");
+        return;
+      } else {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error removing book:", error);
+      toast.error("Something went wrong. Please check your connection.");
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 space-y-8">
@@ -92,9 +106,9 @@ export default function MyBorrowsPage() {
         </Link>
       </div>
 
-      {borrowedBooks.length > 0 ? (
+      {borrowbooks.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {borrowedBooks.map((book) => (
+          {borrowbooks.map((book) => (
             <div
               key={book._id}
               className="flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/40"
@@ -120,17 +134,6 @@ export default function MyBorrowsPage() {
                     <p className="text-xs text-muted-foreground">
                       by {book.author}
                     </p>
-
-                    <div className="pt-2 space-y-1 text-xs text-muted-foreground">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-3.5 w-3.5 text-primary" />
-                        <span>Borrowed: {book.borrowedDate}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-medium">
-                        <Calendar className="h-3.5 w-3.5" />
-                        <span>Due: {book.dueDate}</span>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
@@ -140,15 +143,10 @@ export default function MyBorrowsPage() {
               </div>
 
               <div className="mt-5 pt-3 border-t border-border flex items-center justify-between gap-3">
-                <Link
-                  href={`/book-details?id=${book.id}`}
-                  className="text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
-                >
-                  Details
-                </Link>
-
                 <button
-                  onClick={() => handleReturn(book.id, book.title)}
+                  onClick={() =>
+                    handleReturn(book._id, user?.email, book.copies)
+                  }
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:opacity-95 shadow-sm transition-all cursor-pointer"
                 >
                   <CornerDownLeft className="h-3.5 w-3.5" />

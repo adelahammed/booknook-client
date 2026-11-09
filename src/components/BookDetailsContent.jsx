@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -20,8 +20,36 @@ function BookDetailsContent({ book }) {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [borrowbooks, setborrowBooks] = useState([]);
+
   const { data: session } = useSession();
   const user = session?.user;
+
+  useEffect(() => {
+    if (!user?.email) return;
+
+    const fetchBooks = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows/${encodeURIComponent(user.email)}`,
+          {
+            cache: "no-store",
+          },
+        );
+
+        const data = await res.json();
+        setborrowBooks(data);
+      } catch (error) {
+        console.error("Failed to fetch borrowed books:", error);
+      }
+    };
+
+    fetchBooks();
+  }, [user?.email]);
+
+  const isBorrowed = borrowbooks.some((borrow) => borrow._id === book._id);
+  // console.log("isBorrowed:", borrowbooks);
+  // console.log("isBorrowed:", book._id);
 
   const handleConfirmBorrow = async (id) => {
     try {
@@ -196,53 +224,33 @@ function BookDetailsContent({ book }) {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-              <div className="p-3 rounded-xl border border-border bg-muted/30 text-center">
-                <span className="text-[11px] text-muted-foreground block">
-                  Language
-                </span>
-                <span className="text-xs sm:text-sm font-semibold text-foreground">
-                  English
-                </span>
-              </div>
-
-              <div className="p-3 rounded-xl border border-border bg-muted/30 text-center">
-                <span className="text-[11px] text-muted-foreground block">
-                  Format
-                </span>
-                <span className="text-xs sm:text-sm font-semibold text-foreground">
-                  Hardcover & Paper
-                </span>
-              </div>
-
-              <div className="p-3 rounded-xl border border-border bg-muted/30 text-center col-span-2 sm:col-span-1">
-                <span className="text-[11px] text-muted-foreground block">
-                  Loan Period
-                </span>
-                <span className="text-xs sm:text-sm font-semibold text-foreground">
-                  21 Days
-                </span>
-              </div>
-            </div>
-
             <div className="pt-4 border-t border-border">
-              <button
-                type="button"
-                disabled={book.copies <= 0}
-                onClick={() => setIsModalOpen(true)}
-                className={`w-full py-4 rounded-xl font-semibold text-base shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
-                  book.copies > 0
-                    ? "bg-primary text-primary-foreground hover:opacity-95 hover:shadow-xl hover:scale-[1.01]"
-                    : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
-                }`}
-              >
-                <BookOpen className="h-5 w-5" />
-                <span>
-                  {book.copies > 0
-                    ? "Borrow This Book"
-                    : "Currently Unavailable"}
-                </span>
-              </button>
+              {isBorrowed ? (
+                <button
+                  disabled
+                  className="px-4 py-2 rounded-md w-full text-red-700 bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed"
+                >
+                  Already Borrowed
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  disabled={book.copies <= 0}
+                  onClick={() => setIsModalOpen(true)}
+                  className={`w-full py-4 rounded-xl font-semibold text-base shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
+                    book.copies > 0
+                      ? "bg-primary text-primary-foreground hover:opacity-95 hover:shadow-xl hover:scale-[1.01]"
+                      : "bg-muted text-muted-foreground cursor-not-allowed opacity-60"
+                  }`}
+                >
+                  <BookOpen className="h-5 w-5" />
+                  <span>
+                    {book.copies > 0
+                      ? "Borrow This Book"
+                      : "Currently Unavailable"}
+                  </span>
+                </button>
+              )}
             </div>
           </div>
         </div>

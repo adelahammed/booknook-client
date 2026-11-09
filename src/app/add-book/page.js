@@ -37,7 +37,7 @@ export default function AddBookPage() {
     const form = e.currentTarget;
     const formElementsData = new FormData(form);
 
-    // Explicitly combine form data with uploader info from session
+  
     const newBook = {
       ...Object.fromEntries(formElementsData.entries()),
       userName: user?.name || "",
