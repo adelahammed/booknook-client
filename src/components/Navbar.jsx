@@ -33,7 +33,6 @@ export default function Navbar() {
         { href: "/add-book", label: "Add Book" },
         { href: "/my-books", label: "My Books" },
         { href: "/my-borrows", label: "My Borrows" },
-        { href: "/my-profile", label: "My Profile" },
       ]
     : [
         { href: "/", label: "Home" },

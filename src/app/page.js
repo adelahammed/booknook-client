@@ -16,14 +16,17 @@ import {
 import BookCard from "../components/BookCard";
 
 export default async function Home() {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/books`);
-  const books = await response.json();
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/latest-books?limit=8`,
+  );
+  const newArrivals = await response.json();
 
-  const categoriesList = books.map((cat) => cat.category);
+  const catRes = await fetch(
+    `${process.env.NEXT_PUBLIC_SERVER_URL}/book-categories`,
+  );
+  const categries = await catRes.json();
 
-  const uniqueCategories = [...new Set(categoriesList)];
-
-  const newArrivals = books.reverse().slice(0, 8);
+  const uniqueCategories = categries.map((cat) => cat);
 
   const getCategoryIcon = (iconName) => {
     switch (iconName) {

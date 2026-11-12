@@ -12,12 +12,14 @@ import {
   Layers,
   Tag,
 } from "lucide-react";
-import { token, useSession } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 import getTokenClient from "@/lib/getTokenClient";
+import { useRouter } from "next/navigation";
 
 export default function AddBookPage() {
   const { data: session } = useSession();
   const user = session?.user;
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     title: "",
@@ -59,12 +61,10 @@ export default function AddBookPage() {
         },
       );
       const data = await result.json();
-      console.log("New Book Data:", newBook);
-      console.log("Server Response:", data);
 
       if (result.ok && (data.acknowledged || data.insertedId || data.success)) {
         toast.success("Book successfully added to BookNook!");
-        // Optional: Reset form here if desired
+        router.push("/my-books");
       } else {
         toast.error(data.message || "Failed to add book. Please try again.");
       }

@@ -14,7 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function UserBlocks({ setMobileMenuOpen }) {
@@ -48,7 +47,6 @@ export default function UserBlocks({ setMobileMenuOpen }) {
           <DropdownMenuContent className="w-56" align="end">
             <div className="px-2 py-1.5">
               <p className="text-sm font-medium leading-none">{user.name}</p>
-              <p className="text-xs text-muted-foreground mt-1">{user.email}</p>
             </div>
 
             <DropdownMenuSeparator />

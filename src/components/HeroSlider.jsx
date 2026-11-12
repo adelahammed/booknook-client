@@ -14,7 +14,6 @@ import slider4 from "../assets/Slider Image (4).jpg";
 const slides = [
   {
     image: slider1,
-    tag: "Endless Collections",
     title: "Unlock Infinite Worlds Between the Pages",
     subtitle:
       "Immerse yourself in thousands of curated novels, scholarly papers, and timeless classics. Borrow your next adventure with a single click.",
@@ -22,7 +21,6 @@ const slides = [
   },
   {
     image: slider2,
-    tag: "Community Powered",
     title: "Share Your Books, Inspire Curious Minds",
     subtitle:
       "Join our vibrant readers circle. Contribute your favorite books to the community shelves and empower passionate learners everywhere.",
@@ -30,7 +28,6 @@ const slides = [
   },
   {
     image: slider3,
-    tag: "Knowledge For All",
     title: "Discover Stories That Shape Tomorrow",
     subtitle:
       "From astrophysics and deep history to enchanting children tales, expand your horizons with our diverse literary universe.",
@@ -38,7 +35,6 @@ const slides = [
   },
   {
     image: slider4,
-    tag: "Simple & Seamless",
     title: "Borrow with Ease, Read at Your Own Pace",
     subtitle:
       "A modern borrowing experience designed for modern book lovers. Free, community-focused, and accessible anytime.",
@@ -79,11 +75,6 @@ export default function HeroSlider() {
 
               <div className="absolute inset-0 flex items-center px-6 sm:px-12 md:px-20">
                 <div className="max-w-2xl space-y-4 sm:space-y-6 text-white">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/30 border border-primary/40 text-sky-200 backdrop-blur-md">
-                    <Sparkles className="h-3.5 w-3.5 text-amber-300" />
-                    <span>{slide.tag}</span>
-                  </div>
-
                   <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1] text-white">
                     {slide.title}
                   </h1>

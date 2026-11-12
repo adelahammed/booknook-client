@@ -26,7 +26,7 @@ export default function MyBorrowsPage() {
       const token = await getTokenClient();
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows/${encodeURIComponent(user.email)}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/borrows/${encodeURIComponent(user.email)}`,
           {
             headers: {
               authorization: `Bearer ${token}`,
@@ -48,7 +48,7 @@ export default function MyBorrowsPage() {
     const token = await getTokenClient();
     try {
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows/${email}/${borrowId}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/borrows/${email}/${borrowId}`,
         {
           method: "DELETE",
           headers: {
@@ -150,6 +150,25 @@ export default function MyBorrowsPage() {
                 <p className="text-xs text-muted-foreground line-clamp-2 mt-4 pt-3 border-t border-border">
                   {book.description}
                 </p>
+
+                <div className="text-xs font-normal pt-2 flex gap-3 flex-wrap">
+                  <p>
+                    Borrow Date:{" "}
+                    {new Date(book.borrowedDate).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
+                  <p>
+                    Return Date:{" "}
+                    {new Date(book.dueDate).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
               </div>
 
               <div className="mt-5 pt-3 border-t border-border flex items-center justify-between gap-3">

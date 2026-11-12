@@ -34,7 +34,7 @@ function BookDetailsContent({ book }) {
 
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows/${encodeURIComponent(user.email)}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/borrows/${encodeURIComponent(user.email)}`,
           {
             headers: {
               authorization: `Bearer ${token}`,
@@ -53,14 +53,12 @@ function BookDetailsContent({ book }) {
   }, [user?.email]);
 
   const isBorrowed = borrowbooks.some((borrow) => borrow._id === book._id);
-  // console.log("isBorrowed:", borrowbooks);
-  // console.log("isBorrowed:", book._id);
 
   const handleConfirmBorrow = async (id) => {
     const token = await getTokenClient();
     try {
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/borrows`,
         {
           method: "POST",
           headers: {
@@ -112,6 +110,9 @@ function BookDetailsContent({ book }) {
       console.error("Error borrowing book:", error);
       toast.error("Something went wrong!");
     }
+  };
+  const handleDoubleBorrow = () => {
+    toast.error("You have already borrowed this book");
   };
 
   //   e.preventDefault();
@@ -235,10 +236,10 @@ function BookDetailsContent({ book }) {
             <div className="pt-4 border-t border-border">
               {isBorrowed ? (
                 <button
-                  disabled
-                  className="px-4 py-2 rounded-md w-full text-red-700 bg-gray-100 text-gray-400 text-sm font-medium cursor-not-allowed"
+                  className="w-full py-4 rounded-xl font-semibold text-base shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer bg-primary text-primary-foreground hover:opacity-95 hover:shadow-xl hover:scale-[1.01]"
+                  onClick={handleDoubleBorrow}
                 >
-                  Already Borrowed
+                  Borrow This Book
                 </button>
               ) : (
                 <button
@@ -290,8 +291,45 @@ function BookDetailsContent({ book }) {
                 <strong className="text-foreground">
                   &quot;{book.title}&quot;
                 </strong>
-                . Please provide your information below.
+                . You have to return it in 20 days. .
               </p>
+              <form className="space-y-6">
+                <div className="pt-4 border-t border-border">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                        <User className="h-4 w-4 text-primary" />
+                        <span>User Name *</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="userName"
+                        required
+                        placeholder="Your full name"
+                        value={user?.name || ""}
+                        readOnly
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 text-muted-foreground text-sm cursor-not-allowed transition-all"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-primary" />
+                        <span>User Email *</span>
+                      </label>
+                      <input
+                        type="email"
+                        name="userEmail"
+                        required
+                        placeholder="your.email@example.com"
+                        value={user?.email || ""}
+                        readOnly
+                        className="w-full px-4 py-3 rounded-xl border border-border bg-muted/50 text-muted-foreground text-sm cursor-not-allowed transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
 
             <div className="pt-3 flex gap-3">

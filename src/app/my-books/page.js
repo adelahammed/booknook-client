@@ -15,7 +15,6 @@ import {
   Layers,
   Image as ImageIcon,
   FileText,
-  Mail,
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { useEffect, useState } from "react";
@@ -26,6 +25,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import getTokenClient from "@/lib/getTokenClient";
 
 export default function MyBooksPage() {
@@ -37,6 +49,7 @@ export default function MyBooksPage() {
   const [formData, setFormData] = useState({});
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchBooks = async () => {
       const token = await getTokenClient();
@@ -116,6 +129,7 @@ export default function MyBooksPage() {
       toast.error("Something went wrong. Please check your connection.");
     }
   };
+
   const handleDelete = async (id) => {
     const token = await getTokenClient();
 
@@ -237,16 +251,41 @@ export default function MyBooksPage() {
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-card text-foreground text-xs font-semibold hover:border-primary hover:text-primary transition-colors cursor-pointer"
                         >
                           <Edit3 className="h-3.5 w-3.5" />
-                          <span>Update</span>
+                          <span>Edit</span>
                         </button>
 
-                        <button
-                          onClick={() => handleDelete(book._id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-semibold hover:bg-red-500/20 transition-colors cursor-pointer"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                          <span>Delete</span>
-                        </button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-semibold hover:bg-red-500/20 transition-colors cursor-pointer">
+                              <Trash2 className="h-3.5 w-3.5" />
+                              <span>Delete</span>
+                            </button>
+                          </AlertDialogTrigger>
+
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you absolutely sure?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will
+                                permanently delete this book from your community
+                                library.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                              <AlertDialogAction
+                                onClick={() => handleDelete(book._id)}
+                                className="bg-red-600 hover:bg-red-700 text-white"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </td>
                   </tr>
@@ -279,7 +318,7 @@ export default function MyBooksPage() {
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-3xl w-full  max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl w-full max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">
               Update Book Information
