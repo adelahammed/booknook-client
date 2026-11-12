@@ -17,20 +17,28 @@ import {
 } from "lucide-react";
 import logoImg from "../assets/BookNook Open Book Logo.png";
 import UserBlocks from "./UserBlock";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/all-books", label: "All Books" },
-  { href: "/add-book", label: "Add Book" },
-  { href: "/my-books", label: "My Books" },
-  { href: "/my-borrows", label: "My Borrows" },
-  { href: "/my-profile", label: "My Profile" },
-];
+import { useSession } from "@/lib/auth-client";
 
 export default function Navbar() {
   const pathname = usePathname();
   const { theme, toggleTheme, mounted } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  const navLinks = user
+    ? [
+        { href: "/", label: "Home" },
+        { href: "/all-books", label: "All Books" },
+        { href: "/add-book", label: "Add Book" },
+        { href: "/my-books", label: "My Books" },
+        { href: "/my-borrows", label: "My Borrows" },
+        { href: "/my-profile", label: "My Profile" },
+      ]
+    : [
+        { href: "/", label: "Home" },
+        { href: "/all-books", label: "All Books" },
+      ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/85 backdrop-blur-md transition-colors duration-300">
