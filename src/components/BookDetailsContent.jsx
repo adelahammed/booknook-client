@@ -15,6 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
+import getTokenClient from "@/lib/getTokenClient";
 
 function BookDetailsContent({ book }) {
   const router = useRouter();
@@ -29,11 +30,15 @@ function BookDetailsContent({ book }) {
     if (!user?.email) return;
 
     const fetchBooks = async () => {
+      const token = await getTokenClient();
+
       try {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows/${encodeURIComponent(user.email)}`,
           {
-            cache: "no-store",
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
           },
         );
 
@@ -52,6 +57,7 @@ function BookDetailsContent({ book }) {
   // console.log("isBorrowed:", book._id);
 
   const handleConfirmBorrow = async (id) => {
+    const token = await getTokenClient();
     try {
       const result = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows`,
@@ -59,6 +65,7 @@ function BookDetailsContent({ book }) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             email: user.email,
@@ -83,6 +90,7 @@ function BookDetailsContent({ book }) {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             copies: book.copies - 1,

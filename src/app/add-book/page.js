@@ -12,7 +12,8 @@ import {
   Layers,
   Tag,
 } from "lucide-react";
-import { useSession } from "@/lib/auth-client";
+import { token, useSession } from "@/lib/auth-client";
+import getTokenClient from "@/lib/getTokenClient";
 
 export default function AddBookPage() {
   const { data: session } = useSession();
@@ -37,7 +38,8 @@ export default function AddBookPage() {
     const form = e.currentTarget;
     const formElementsData = new FormData(form);
 
-  
+    const tokenData = await getTokenClient();
+
     const newBook = {
       ...Object.fromEntries(formElementsData.entries()),
       userName: user?.name || "",
@@ -51,6 +53,7 @@ export default function AddBookPage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${tokenData}`,
           },
           body: JSON.stringify(newBook),
         },

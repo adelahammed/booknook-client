@@ -26,6 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import getTokenClient from "@/lib/getTokenClient";
 
 export default function MyBooksPage() {
   const { data: session } = useSession();
@@ -38,9 +39,12 @@ export default function MyBooksPage() {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchBooks = async () => {
+      const token = await getTokenClient();
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/books`, {
-          cache: "no-store",
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
         });
 
         const data = await res.json();
@@ -85,6 +89,8 @@ export default function MyBooksPage() {
       ...Object.fromEntries(formElementsData.entries()),
     };
 
+    const token = await getTokenClient();
+
     try {
       const result = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/books/${selectedBook._id}`,
@@ -92,6 +98,7 @@ export default function MyBooksPage() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(bookUpdate),
         },
@@ -110,11 +117,17 @@ export default function MyBooksPage() {
     }
   };
   const handleDelete = async (id) => {
+    const token = await getTokenClient();
+
     try {
       const result = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/books/${id}`,
         {
           method: "DELETE",
+
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
         },
       );
       const data = await result.json();

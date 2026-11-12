@@ -9,23 +9,19 @@ export default function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-xl bg-primary/10 p-1 flex items-center justify-center">
+            <Link
+              href="/"
+              className="flex items-center gap-3 transition-opacity hover:opacity-90"
+            >
+              <div className="w-full">
                 <Image
                   src={logoImg}
                   alt="BookNook Logo"
-                  width={44}
-                  height={44}
+                  width={200}
+                  height={48}
+                  priority
                   className="object-contain"
                 />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-extrabold tracking-tight text-xl text-foreground font-heading">
-                  Book<span className="text-primary">Nook</span>
-                </span>
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold -mt-1">
-                  Borrow & Share
-                </span>
               </div>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">

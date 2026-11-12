@@ -1,29 +1,26 @@
+import React from "react";
 import BookDetailsContent from "@/components/BookDetailsContent";
-import { notFound } from "next/navigation";
+import getTokenServer from "@/lib/getTokenServer";
 
-export default async function BookDetailsPage({ params }) {
+export const instant = false;
+
+const BookDetailsPage = async ({ params }) => {
   const paramsRes = await params;
+
+  const token = await getTokenServer();
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_SERVER_URL}/books/${paramsRes.id}`,
     {
-      cache: "no-store",
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
     },
   );
 
-  if (!res.ok) {
-    if (res.status === 404) {
-      notFound();
-    }
-
-    throw new Error("Failed to fetch book details");
-  }
-
   const book = await res.json();
 
-  if (!book) {
-    notFound();
-  }
-
   return <BookDetailsContent book={book} />;
-}
+};
+
+export default BookDetailsPage;

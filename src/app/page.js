@@ -154,17 +154,8 @@ export default async function Home() {
             </p>
           </div>
 
-          <section className="bg-muted/40 py-16">
+          <section className=" py-16">
             <div className="container mx-auto px-4">
-              <div className="text-center mb-10">
-                <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground">
-                  How Borrowing Works
-                </h2>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  Three steps. No library card needed.
-                </p>
-              </div>
-
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="rounded-xl border border-border bg-card px-8 py-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-md hover:border-primary/40">
                   <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center mb-4">

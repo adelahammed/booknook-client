@@ -17,7 +17,7 @@ const BookCard = ({ book }) => {
           />
           <div className="absolute bottom-3 left-3">
             <span
-              className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-white backdrop-blur-md`}
+              className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border bg-yellow-500 text-white backdrop-blur-md`}
             >
               {book.category}
             </span>

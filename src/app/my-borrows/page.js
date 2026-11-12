@@ -12,20 +12,25 @@ import {
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { useEffect, useState } from "react";
+import getTokenClient from "@/lib/getTokenClient";
 
 export default function MyBorrowsPage() {
   const [borrowbooks, setborrowBooks] = useState([]);
   const { data: session } = useSession();
   const user = session?.user;
+
   useEffect(() => {
     if (!user?.email) return;
 
     const fetchBooks = async () => {
+      const token = await getTokenClient();
       try {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows/${encodeURIComponent(user.email)}`,
           {
-            cache: "no-store",
+            headers: {
+              authorization: `Bearer ${token}`,
+            },
           },
         );
 
@@ -40,11 +45,15 @@ export default function MyBorrowsPage() {
   }, [user?.email]);
 
   const handleReturn = async (borrowId, email, bookCopies) => {
+    const token = await getTokenClient();
     try {
       const result = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/my-borrows/${email}/${borrowId}`,
         {
           method: "DELETE",
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
         },
       );
       const data = await result.json();
@@ -61,6 +70,7 @@ export default function MyBorrowsPage() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             copies: bookCopies + 1,

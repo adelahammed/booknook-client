@@ -5,12 +5,20 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { LogIn, Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const searchParams = useSearchParams();
+
+  const rawRedirect = searchParams.get("redirect");
+  const redirectTo =
+    rawRedirect && rawRedirect.startsWith("/") && !rawRedirect.startsWith("//")
+      ? rawRedirect
+      : "/";
 
   const validatePassword = (pass) => {
     if (pass.length < 6) {
@@ -37,7 +45,7 @@ export default function LoginPage() {
 
     const { data, error } = await signIn.email({
       ...user,
-      callbackURL: "/",
+      callbackURL: redirectTo,
     });
 
     if (data) {
@@ -53,13 +61,7 @@ export default function LoginPage() {
   const signInGoogle = async () => {
     const data = await signIn.social({
       provider: "google",
-    });
-    return data;
-  };
-
-  const signInGithub = async () => {
-    const data = await signIn.social({
-      provider: "github",
+      callbackURL: redirectTo,
     });
     return data;
   };
