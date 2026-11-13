@@ -7,8 +7,8 @@ export default function Footer() {
   return (
     <footer className="border-t border-border bg-card/60 text-card-foreground transition-colors duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+          <div className="space-y-4 max-w-[400px]">
             <Link
               href="/"
               className="flex items-center gap-3 transition-opacity hover:opacity-90"
@@ -89,8 +89,8 @@ export default function Footer() {
             </div>
           </div>
 
-          <div></div>
-          <div></div>
+          {/* <div></div>
+          <div></div> */}
 
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground mb-4">
