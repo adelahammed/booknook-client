@@ -34,10 +34,19 @@ export default function MyBorrowsPage() {
           },
         );
 
-        const data = await res.json();
-        setborrowBooks(data);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            setborrowBooks(data);
+          } else {
+            setborrowBooks([]);
+          }
+        } else {
+          setborrowBooks([]);
+        }
       } catch (error) {
         console.error("Failed to fetch borrowed books:", error);
+        setborrowBooks([]);
       }
     };
 
@@ -48,7 +57,7 @@ export default function MyBorrowsPage() {
     const token = await getTokenClient();
     try {
       const result = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/borrows/${email}/${borrowId}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/borrows/${encodeURIComponent(email)}/${borrowId}`,
         {
           method: "DELETE",
           headers: {
@@ -116,7 +125,7 @@ export default function MyBorrowsPage() {
         </Link>
       </div>
 
-      {borrowbooks.length > 0 ? (
+      {Array.isArray(borrowbooks) && borrowbooks.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {borrowbooks.map((book) => (
             <div

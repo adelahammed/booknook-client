@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination, EffectFade } from "swiper/modules";
 import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
@@ -43,6 +44,18 @@ const slides = [
 ];
 
 export default function HeroSlider() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="relative w-full h-[460px] sm:h-[520px] md:h-[600px] rounded-3xl bg-muted animate-pulse" />
+    );
+  }
+
   return (
     <div className="relative w-full overflow-hidden rounded-3xl shadow-2xl">
       <Swiper

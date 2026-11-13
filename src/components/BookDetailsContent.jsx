@@ -41,18 +41,28 @@ function BookDetailsContent({ book }) {
             },
           },
         );
-
-        const data = await res.json();
-        setborrowBooks(data);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            setborrowBooks(data);
+          } else {
+            setborrowBooks([]);
+          }
+        } else {
+          setborrowBooks([]);
+        }
       } catch (error) {
         console.error("Failed to fetch borrowed books:", error);
+        setborrowBooks([]);
       }
     };
 
     fetchBooks();
   }, [user?.email]);
 
-  const isBorrowed = borrowbooks.some((borrow) => borrow._id === book._id);
+  const isBorrowed = Array.isArray(borrowbooks)
+    ? borrowbooks.some((borrow) => borrow._id === book._id)
+    : false;
 
   const handleConfirmBorrow = async (id) => {
     const token = await getTokenClient();
@@ -114,21 +124,6 @@ function BookDetailsContent({ book }) {
   const handleDoubleBorrow = () => {
     toast.error("You have already borrowed this book");
   };
-
-  //   e.preventDefault();
-
-  //   if (book.copies > 0) {
-  //     setIsModalOpen(false);
-  //     setBorrowerName("");
-  //     setBorrowerEmail("");
-
-  //     toast.success(
-  //       `You have successfully borrowed "${book.title}"! Enjoy your read.`,
-  //     );
-  //   } else {
-  //     toast.error("Sorry, no copies are left for this book.");
-  //   }
-  // };
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14 max-w-5xl space-y-8">

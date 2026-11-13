@@ -13,17 +13,18 @@ export default function Footer() {
               href="/"
               className="flex items-center gap-3 transition-opacity hover:opacity-90"
             >
-              <div className="w-full">
+              <div className="w-full max-w-[200px] sm:max-w-[220px]">
                 <Image
                   src={logoImg}
                   alt="BookNook Logo"
                   width={200}
                   height={48}
                   priority
-                  className="object-contain"
+                  className="h-auto w-full object-contain"
                 />
               </div>
             </Link>
+
             <p className="text-sm text-muted-foreground leading-relaxed">
               BookNook is your community-driven library platform where
               passionate readers borrow, share, and discover captivating
