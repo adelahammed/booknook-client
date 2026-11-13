@@ -22,6 +22,7 @@ function BookDetailsContent({ book }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [borrowbooks, setborrowBooks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { data: session } = useSession();
   const user = session?.user;
@@ -54,6 +55,8 @@ function BookDetailsContent({ book }) {
       } catch (error) {
         console.error("Failed to fetch borrowed books:", error);
         setborrowBooks([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -229,7 +232,11 @@ function BookDetailsContent({ book }) {
             </div>
 
             <div className="pt-4 border-t border-border">
-              {isBorrowed ? (
+              {isLoading ? (
+                <button className="w-full py-4 rounded-xl font-semibold text-base shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer bg-primary text-primary-foreground hover:opacity-95 hover:shadow-xl hover:scale-[1.01]">
+                  Loading....
+                </button>
+              ) : isBorrowed ? (
                 <button
                   className="w-full py-4 rounded-xl font-semibold text-base shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer bg-primary text-primary-foreground hover:opacity-95 hover:shadow-xl hover:scale-[1.01]"
                   onClick={handleDoubleBorrow}
